@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include gmail_rest *.css
+recursive-include gmail_rest *.csv
+recursive-include gmail_rest *.html
+recursive-include gmail_rest *.ico
+recursive-include gmail_rest *.js
+recursive-include gmail_rest *.json
+recursive-include gmail_rest *.md
+recursive-include gmail_rest *.png
+recursive-include gmail_rest *.py
+recursive-include gmail_rest *.svg
+recursive-include gmail_rest *.txt
+recursive-exclude gmail_rest *.pyc
