@@ -79,7 +79,7 @@ def oauth2callback():
   # Store credentials in the session.
   # ACTION ITEM: In a production app, you likely want to save these
   #              credentials in a persistent database instead.
-  credentials = flow.credentialshttp
+  credentials = flow.credential
   frappe.session['credentials'] = credentials_to_dict(credentials)
 
   def credentials_to_dict(credentials):
