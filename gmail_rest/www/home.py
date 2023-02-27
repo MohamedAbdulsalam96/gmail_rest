@@ -15,10 +15,10 @@ CLIENT_CONFIG = {
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_secret": "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",
         "redirect_uris": [
-            "http://localhost:8000/oauth2callback"
+            "https://desk.tridz.in/oauth2callback"
         ],
         "javascript_origins": [
-            "http://localhost:8000"
+            "https://desk.tridz.in"
         ]
     }
 }
@@ -91,5 +91,5 @@ def oauth2callback():
             'scopes': credentials.scopes}
 
 #   return flask.redirect(flask.url_for('test_api_request'))
-  
+
 
