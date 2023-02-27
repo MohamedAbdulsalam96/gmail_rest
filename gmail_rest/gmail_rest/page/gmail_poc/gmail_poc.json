@@ -1,0 +1,19 @@
+{
+ "content": null,
+ "creation": "2023-02-22 16:01:56.725326",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2023-02-22 16:02:03.904868",
+ "modified_by": "Administrator",
+ "module": "Gmail Rest",
+ "name": "gmail_poc",
+ "owner": "Administrator",
+ "page_name": "gmail_poc",
+ "roles": [],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Gmail"
+}
