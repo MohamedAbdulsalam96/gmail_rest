@@ -15,10 +15,10 @@ CLIENT_CONFIG = {
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_secret": "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",
         "redirect_uris": [
-            "https://desk.tridz.in/oauth2callback"
+            "https://soft-toes-itch-49-207-215-93.loca.lt/oauth2callback"
         ],
         "javascript_origins": [
-            "https://desk.tridz.in"
+            "https://soft-toes-itch-49-207-215-93.loca.lt"
         ]
     }
 }
@@ -44,7 +44,7 @@ def authorize():
   # for the OAuth 2.0 client, which you configured in the API Console. If this
   # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
   # error.
-  flow.redirect_uri =get_url('https://desk.tridz.in/api/method/gmail_rest.www.home.oauth2callback')
+  flow.redirect_uri =get_url('https://soft-toes-itch-49-207-215-93.loca.lt/api/method/gmail_rest.www.home.oauth2callback')
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
@@ -70,7 +70,7 @@ def oauth2callback():
         client_config=CLIENT_CONFIG,
         scopes=SCOPES,
         state=state)
-  flow.redirect_uri = get_url('https://desk.tridz.in/api/method/gmail_rest.www.home.oauth2callback')
+  flow.redirect_uri = get_url('https://soft-toes-itch-49-207-215-93.loca.lt /api/method/gmail_rest.www.home.oauth2callback')
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = frappe.request.url
@@ -81,6 +81,8 @@ def oauth2callback():
   #              credentials in a persistent database instead.
   credentials = flow.credential
   frappe.session['credentials'] = credentials_to_dict(credentials)
+  cred=credentials_to_dict(credentials)
+  print(cred)
 
   def credentials_to_dict(credentials):
     return {'token': credentials.token,
