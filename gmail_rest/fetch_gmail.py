@@ -5,21 +5,22 @@ import googleapiclient.discovery
 from werkzeug.middleware.proxy_fix import ProxyFix
 from frappe.utils import get_url
 import imaplib
+import json
 import urllib.request
 
-credentials={
+# credentials={
 
-    'token': 'ya29.a0AVvZVsonNvi1Drd6bcHwgRyi0BEwRg_lZtqHeGGN0BRLUoQJdKi_vy3gLrmi0tby3jOp157Eao7nqpcnu8aop7qPVb0_M5OkMZmR6gyxDXWHdDNHPLh4fRrICtsEE9TZGYoXJsVPJrRldB4viVH9irFF3Z5XaCgYKAZ0SARISFQGbdwaItHcvWMrbhNvgFnlTaB3-iQ0163',
-    'refresh_token': '1//0gO6q6L0upOIxCgYIARAAGBASNwF-L9IrpkwqGOzca7zvRmI7-wIf930ijwf9kjf7kqbCKrBq5vxGbpX7-xM1HIJS4wkLLqwI87M',
-    'token_uri': 'https://oauth2.googleapis.com/token',
-    'client_id': '717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
-    'client_secret': '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',
-    'scopes': [
-        'https://www.googleapis.com/auth/gmail.readonly',
-        'https://www.googleapis.com/auth/gmail.compose',
-        'https://www.googleapis.com/auth/gmail.send'
-  ]
-}
+#     'token': 'ya29.a0AVvZVsonNvi1Drd6bcHwgRyi0BEwRg_lZtqHeGGN0BRLUoQJdKi_vy3gLrmi0tby3jOp157Eao7nqpcnu8aop7qPVb0_M5OkMZmR6gyxDXWHdDNHPLh4fRrICtsEE9TZGYoXJsVPJrRldB4viVH9irFF3Z5XaCgYKAZ0SARISFQGbdwaItHcvWMrbhNvgFnlTaB3-iQ0163',
+#     'refresh_token': '1//0gO6q6L0upOIxCgYIARAAGBASNwF-L9IrpkwqGOzca7zvRmI7-wIf930ijwf9kjf7kqbCKrBq5vxGbpX7-xM1HIJS4wkLLqwI87M',
+#     'token_uri': 'https://oauth2.googleapis.com/token',
+#     'client_id': '717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
+#     'client_secret': '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',
+#     'scopes': [
+#         'https://www.googleapis.com/auth/gmail.readonly',
+#         'https://www.googleapis.com/auth/gmail.compose',
+#         'https://www.googleapis.com/auth/gmail.send'
+#   ]
+# }
 
 CLIENT_CONFIG = {
     "web": {
@@ -50,7 +51,15 @@ API_VERSION = 'v1'
 @frappe.whitelist(allow_guest=True)
 def fetch():
 
-    cred = google.oauth2.credentials.Credentials(credentials)
+    cred = google.oauth2.credentials.Credentials(
+        token='ya29.a0AVvZVspcJPjTdJQsy64-o764hD656qsiG8DyM-7hZBB8HZfepQwWaLSfBTj2-219s0mDX8y2pQ9aWfhZWber_5Gwiv-JEjOwcYzhywSqSa3ECiVvMU5vPi62wzTWgukSlxNofBQSrdZ784NEZLyNAWwaEzw_aCgYKAQsSARISFQGbdwaIpYfQgAzrjzuOCWI4N4AppQ0163',
+        refresh_token='1//0g1B4zMLv1RrLCgYIARAAGBASNwF-L9IrRDb2dRAK3_ezw2sFlk1q2oJVAlUgZ4M4ebo-hIz-m1lfNzOccbefnALWSPjoKBzHC7Y',
+        token_uri='https://oauth2.googleapis.com/token',
+        client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
+        client_secret='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',
+        scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send']
+
+    )
     gmail = googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=cred)
     results = gmail.users().labels().list(userId='me').execute()
     labels = results.get('labels', [])
