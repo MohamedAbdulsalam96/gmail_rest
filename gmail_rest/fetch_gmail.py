@@ -91,4 +91,4 @@ def fetch():
         ).insert(ignore_permissions=True)
     email_data +="</div>"
 
-    return frappe.render_template(email_data,context={})
+    return frappe.respond_as_web_page(title='thread',html=email_data)
