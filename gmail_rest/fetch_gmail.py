@@ -96,7 +96,7 @@ def create_ticket(thread):
         'doctype':'Ticket',
         'subject':thread['id'],
         'raised_by':'user@gmail.com',
-        'description':thread 
+        'description':thread['snippet'] 
     })
     ticket.insert(ignore_permissions=True)
 
