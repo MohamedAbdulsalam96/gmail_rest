@@ -9,20 +9,6 @@ import imaplib
 import json
 import urllib.request
 
-# credentials={
-
-#     'token': 'ya29.a0AVvZVsonNvi1Drd6bcHwgRyi0BEwRg_lZtqHeGGN0BRLUoQJdKi_vy3gLrmi0tby3jOp157Eao7nqpcnu8aop7qPVb0_M5OkMZmR6gyxDXWHdDNHPLh4fRrICtsEE9TZGYoXJsVPJrRldB4viVH9irFF3Z5XaCgYKAZ0SARISFQGbdwaItHcvWMrbhNvgFnlTaB3-iQ0163',
-#     'refresh_token': '1//0gO6q6L0upOIxCgYIARAAGBASNwF-L9IrpkwqGOzca7zvRmI7-wIf930ijwf9kjf7kqbCKrBq5vxGbpX7-xM1HIJS4wkLLqwI87M',
-#     'token_uri': 'https://oauth2.googleapis.com/token',
-#     'client_id': '717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
-#     'client_secret': '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',
-#     'scopes': [
-#         'https://www.googleapis.com/auth/gmail.readonly',
-#         'https://www.googleapis.com/auth/gmail.compose',
-#         'https://www.googleapis.com/auth/gmail.send'
-#   ]
-# }
-
 CLIENT_CONFIG = {
     "web": {
         "client_id": "717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com",
@@ -67,18 +53,7 @@ def fetch():
     labels = results.get('labels', [])
     threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])
     server = imaplib.IMAP4_SSL('imap.gmail.com')
-    email_data = ""
-    email_data +="""
-    <style>
-     h2, body {
-      font-family:Helvetica,sans-serif;      
-     }
-     
-    </style>
-    <div style='border:solid 1px #c3c3c3;width:70%; margin:20px auto'>
-    <h2 style='margin-left:20px'>Emails Threads</h2>
-    """
-
+    
     for thread in threads:
         thread_id = thread['id']
         thread_data = gmail.users().threads().get(userId='me', id=thread_id).execute()
@@ -94,13 +69,11 @@ def fetch():
 
         frappe.enqueue(create_ticket,queue='default', data=subject)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
-        email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     response=gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
-    email_data +="</div>"
-
-    return frappe.respond_as_web_page(title='thread',html=email_data)
+    
+    return
 
 def create_ticket(data):
 
