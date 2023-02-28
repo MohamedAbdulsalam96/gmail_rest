@@ -83,6 +83,8 @@ def fetch():
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
         email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
 
+    modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
+    response=gmail.users().messages().batchModify(userId='me',body=modify_request.execute())
     email_data +="</div>"
 
     return frappe.respond_as_web_page(title='thread',html=email_data)
@@ -93,7 +95,7 @@ def create_ticket(thread):
         'doctype':'Ticket',
         'subject':thread['id'],
         'raised_by':'user@gmail.com',
-        'description':thread['snippet'] 
+        'description':thread 
     })
     ticket.insert(ignore_permissions=True)
 
