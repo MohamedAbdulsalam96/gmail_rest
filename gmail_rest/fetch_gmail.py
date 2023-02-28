@@ -52,8 +52,8 @@ API_VERSION = 'v1'
 def fetch():
     
     cred = google.oauth2.credentials.Credentials(
-        token='ya29.a0AVvZVsqwcmz8XoqonxWJ39NCcNylN92O2yRMKGDVJNONeT2ybbyX52jRfX6krt4NS0VsJqJwvZfjEtNxWfFrURxwaot4Sl92UtOAy0Y5aH6Y9ZkTIHP1E310kCi4kWWYo_q9fDIesx9TvfPNQJ5rw2tmQRjRaCgYKAVwSARMSFQGbdwaIiAg-l2lVYA6PgfJ8nc5K6w0163',
-        refresh_token='1//0gMBLzB13IAwXCgYIARAAGBASNwF-L9Ir3r51vyCDm8wadY7K1He2BZX5AlFHvOrTT5HLVSv2aRwHB5vlrblIImZRlvYmgIvzuVk',
+        token='ya29.a0AVvZVsqiFI_74aNalk9_MlSOXUw5fIq6JgSJfD04q4wA8_2QkISVil3a6j5IjnUUxbn0YDPIA8y44jxSDcrEe2yboWhwjwDxJefLelNmSUfXmETaHK9PbQmHV7o6YEbj1HqjjTzsC2YpUm00dKe1qD56uEjZaCgYKAW4SARMSFQGbdwaIG9uRgVMhUasKjWdDHt01mg0163',
+        refresh_token='1//0gYEiHinQBcFhCgYIARAAGBASNwF-L9Irg9tm7WO3C8xmk2MLM1Ap1HxXp-8NVzvwzpaap9QaxKY0fc5P8b-pcsVFzNuB1_HKMwo',
         token_uri='https://oauth2.googleapis.com/token',
         client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
         client_secret='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',
@@ -84,7 +84,7 @@ def fetch():
         email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
-    response=gmail.users().messages().batchModify(userId='me',body=modify_request.execute())
+    response=gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     email_data +="</div>"
 
     return frappe.respond_as_web_page(title='thread',html=email_data)
