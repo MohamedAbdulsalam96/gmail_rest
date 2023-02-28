@@ -52,8 +52,8 @@ API_VERSION = 'v1'
 def fetch():
     
     cred = google.oauth2.credentials.Credentials(
-        token='ya29.a0AVvZVsrosPh7iqkRpmmkasv9UkNJa5wA6ZVLbpatQZd-gdYGkW0OZj1BC7H7B80eLqUUQV_9HPf-wQbrez-wBBeKvinQct6OwX0t6zGeuTG9vvFecm0ADYNHTvSVgMdTmHlGOXoKygguDpX4pphgV-1km6KeaCgYKATwSARISFQGbdwaInPIsCLHRtCnD4_ojya6jxA0163',
-        refresh_token='1//0gBUueKzb9mKICgYIARAAGBASNwF-L9IrFfpTylj5wXfNb4TgyVksALI_qJt10INhfaPh8Mwk78mMIrTfIM8EXmiKXxmcWOkyrZ8',
+        token='ya29.a0AVvZVsqwcmz8XoqonxWJ39NCcNylN92O2yRMKGDVJNONeT2ybbyX52jRfX6krt4NS0VsJqJwvZfjEtNxWfFrURxwaot4Sl92UtOAy0Y5aH6Y9ZkTIHP1E310kCi4kWWYo_q9fDIesx9TvfPNQJ5rw2tmQRjRaCgYKAVwSARMSFQGbdwaIiAg-l2lVYA6PgfJ8nc5K6w0163',
+        refresh_token='1//0gMBLzB13IAwXCgYIARAAGBASNwF-L9Ir3r51vyCDm8wadY7K1He2BZX5AlFHvOrTT5HLVSv2aRwHB5vlrblIImZRlvYmgIvzuVk',
         token_uri='https://oauth2.googleapis.com/token',
         client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
         client_secret='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',
@@ -63,7 +63,7 @@ def fetch():
     gmail = googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=cred)
     results = gmail.users().labels().list(userId='me').execute()
     labels = results.get('labels', [])
-    threads = gmail.users().threads().list(userId='me').execute().get('threads', [])
+    threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])
     server = imaplib.IMAP4_SSL('imap.gmail.com')
 
     email_data = ""
