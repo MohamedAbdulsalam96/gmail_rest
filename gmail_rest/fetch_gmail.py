@@ -50,6 +50,7 @@ API_VERSION = 'v1'
 
 @frappe.whitelist(allow_guest=True)
 def fetch():
+    frappe.throw("heklo")
 
     cred = google.oauth2.credentials.Credentials(
         token='ya29.a0AVvZVsrosPh7iqkRpmmkasv9UkNJa5wA6ZVLbpatQZd-gdYGkW0OZj1BC7H7B80eLqUUQV_9HPf-wQbrez-wBBeKvinQct6OwX0t6zGeuTG9vvFecm0ADYNHTvSVgMdTmHlGOXoKygguDpX4pphgV-1km6KeaCgYKATwSARISFQGbdwaInPIsCLHRtCnD4_ojya6jxA0163',
@@ -82,13 +83,12 @@ def fetch():
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
         email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
 
-        ticket=frappe.get_doc(
-            {
-                "doctype":"Ticket",
-                "subject":thread['id'],
-                "raised_by":"fadilsiddique@gmail.com",
-            }
-        )
+        ticket=frappe.get_doc({
+            'doctype':'Ticket',
+            'subject':thread['id'],
+            'raised_by':'user@gmail.com',
+            'description':thread['snippet'] 
+        })
         ticket.insert(ignore_permissions=True)
         ticket.save(ignore_permissions=True)
     email_data +="</div>"
