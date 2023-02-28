@@ -57,7 +57,7 @@ def fetch():
         token_uri='https://oauth2.googleapis.com/token',
         client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
         client_secret='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',
-        scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send']
+        scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.modify']
 
     )
     gmail = googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=cred)
