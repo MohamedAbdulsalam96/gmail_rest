@@ -80,21 +80,19 @@ def fetch():
     """
 
     for thread in threads:
-        data={
-            'subject':'',
-            'body':''
-        }
-        for header in thread['messages'][0]['payload']['headers']:
-            if header['name']=='Subject':
-                data['subject']=header['value']
-        for part in thread['messages'][0]['payload']['parts']:
-            if part['mimeType'] == 'text/plain':
-                info = part['body'].get('data')
-                if info:
-                    decoded_data = base64.urlsafe_b64decode(data.encode('UTF-8'))
-                    data['body'] += str(decoded_data, 'UTF-8')
+        thread_id = thread['id']
+        thread_data = gmail.users().threads().get(userId='me', id=thread_id).execute()
+        message = thread_data['messages'][0]
+        payload = message['payload']
+        headers = payload['headers']
+        subject=''
 
-        frappe.enqueue(create_ticket,queue='default', data=data)
+        for header in headers:
+            if header['name'] == 'Subject':
+                subject = header['value']
+                break
+
+        frappe.enqueue(create_ticket,queue='default', data=subject)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
         email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
 
@@ -108,9 +106,9 @@ def create_ticket(data):
 
     ticket=frappe.get_doc({
         'doctype':'Ticket',
-        'subject':data['subject'],
+        'subject':data,
         'raised_by':'user@gmail.com',
-        'description':data['body'] 
+        'description':'' 
     })
     ticket.insert(ignore_permissions=True)
 
