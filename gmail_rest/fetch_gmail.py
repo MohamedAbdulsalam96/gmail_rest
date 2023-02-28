@@ -4,6 +4,7 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 from werkzeug.middleware.proxy_fix import ProxyFix
 from frappe.utils import get_url
+import base64
 import imaplib
 import json
 import urllib.request
@@ -66,7 +67,6 @@ def fetch():
     labels = results.get('labels', [])
     threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])
     server = imaplib.IMAP4_SSL('imap.gmail.com')
-
     email_data = ""
     email_data +="""
     <style>
@@ -80,7 +80,21 @@ def fetch():
     """
 
     for thread in threads:
-        frappe.enqueue(create_ticket,queue='default', thread=thread)
+        data={
+            'subject':'',
+            'body':''
+        }
+        for header in thread['messages'][0]['payload']['headers']:
+            if header['name']=='Subject':
+                data['subject']=header['value']
+        for part in thread['messages'][0]['payload']['parts']:
+            if part['mimeType'] == 'text/plain':
+                info = part['body'].get('data')
+                if info:
+                    decoded_data = base64.urlsafe_b64decode(data.encode('UTF-8'))
+                    data['body'] += str(decoded_data, 'UTF-8')
+
+        frappe.enqueue(create_ticket,queue='default', data=data)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
         email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
 
@@ -90,13 +104,13 @@ def fetch():
 
     return frappe.respond_as_web_page(title='thread',html=email_data)
 
-def create_ticket(thread):
+def create_ticket(data):
 
     ticket=frappe.get_doc({
         'doctype':'Ticket',
-        'subject':thread['id'],
+        'subject':data['subject'],
         'raised_by':'user@gmail.com',
-        'description':thread['snippet'] 
+        'description':data['body'] 
     })
     ticket.insert(ignore_permissions=True)
 
