@@ -79,9 +79,8 @@ def fetch():
     """
 
     for thread in threads:
-        frappe.throw(threads)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
         email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
-        email_data +="</div>"
+    email_data +="</div>"
 
-        return frappe.respond_as_web_page(title="thread",html=email_data)
+    return frappe.respond_as_web_page(title="thread",html=email_data)
