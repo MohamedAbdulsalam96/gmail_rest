@@ -43,6 +43,7 @@ SCOPES = [
   'https://www.googleapis.com/auth/gmail.readonly',
   'https://www.googleapis.com/auth/gmail.compose',
   'https://www.googleapis.com/auth/gmail.send',
+  'https://www.googleapis.com/auth/gmail.modify'
 ]
 
 API_SERVICE_NAME = 'gmail'
@@ -52,8 +53,8 @@ API_VERSION = 'v1'
 def fetch():
     
     cred = google.oauth2.credentials.Credentials(
-        token='ya29.a0AVvZVsqiFI_74aNalk9_MlSOXUw5fIq6JgSJfD04q4wA8_2QkISVil3a6j5IjnUUxbn0YDPIA8y44jxSDcrEe2yboWhwjwDxJefLelNmSUfXmETaHK9PbQmHV7o6YEbj1HqjjTzsC2YpUm00dKe1qD56uEjZaCgYKAW4SARMSFQGbdwaIG9uRgVMhUasKjWdDHt01mg0163',
-        refresh_token='1//0gYEiHinQBcFhCgYIARAAGBASNwF-L9Irg9tm7WO3C8xmk2MLM1Ap1HxXp-8NVzvwzpaap9QaxKY0fc5P8b-pcsVFzNuB1_HKMwo',
+        token='ya29.a0AVvZVsrvd8VTmNPfEyF4WQPcoY8yldc2iV7w9mgY8O8W6TNpB0K9qMW5N8PFJren9UXT8mFB_1HAgLwpiOPcY6frkxJ4Iu6kbpaPGPebWA1-KDuFRMHVkRXU7PqmZ8uoaJI4WuWVbtKerXGA_WYx93LK-0F8aCgYKAQYSARMSFQGbdwaISn_EweWs1LRk6pABJeXmwQ0163',
+        refresh_token='1//0gsRxz6Fk22O8CgYIARAAGBASNwF-L9IrRW5_wn1CbVPAjSN6tmlQBp-CHMa10udOljvn2ryJH290dgsa7QF6rMLhJdtiZFyr51g',
         token_uri='https://oauth2.googleapis.com/token',
         client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
         client_secret='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',
