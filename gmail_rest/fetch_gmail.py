@@ -79,17 +79,21 @@ def fetch():
     """
 
     for thread in threads:
+        frappe.enqueue(create_ticket,queue='default', thread=thread)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
         email_data +=f'''<div style='border-bottom:solid 1px #c3c3c3; padding: 20px 10px;'><div style='padding:10px;margin-bottom:10px'>  <input type="checkbox">{thread_data} </div></div>'''
 
-        ticket=frappe.get_doc({
-            'doctype':'Ticket',
-            'subject':thread['id'],
-            'raised_by':'user@gmail.com',
-            'description':thread['snippet'] 
-        })
-        ticket.insert(ignore_permissions=True)
-        ticket.save(ignore_permissions=True)
     email_data +="</div>"
 
     return frappe.respond_as_web_page(title='thread',html=email_data)
+
+def create_ticket(thread):
+
+    ticket=frappe.get_doc({
+        'doctype':'Ticket',
+        'subject':thread['id'],
+        'raised_by':'user@gmail.com',
+        'description':thread['snippet'] 
+    })
+    ticket.insert(ignore_permissions=True)
+
