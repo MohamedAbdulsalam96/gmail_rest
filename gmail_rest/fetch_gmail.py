@@ -50,8 +50,7 @@ API_VERSION = 'v1'
 
 @frappe.whitelist(allow_guest=True)
 def fetch():
-    frappe.throw("heklo")
-
+    
     cred = google.oauth2.credentials.Credentials(
         token='ya29.a0AVvZVsrosPh7iqkRpmmkasv9UkNJa5wA6ZVLbpatQZd-gdYGkW0OZj1BC7H7B80eLqUUQV_9HPf-wQbrez-wBBeKvinQct6OwX0t6zGeuTG9vvFecm0ADYNHTvSVgMdTmHlGOXoKygguDpX4pphgV-1km6KeaCgYKATwSARISFQGbdwaInPIsCLHRtCnD4_ojya6jxA0163',
         refresh_token='1//0gBUueKzb9mKICgYIARAAGBASNwF-L9IrFfpTylj5wXfNb4TgyVksALI_qJt10INhfaPh8Mwk78mMIrTfIM8EXmiKXxmcWOkyrZ8',
