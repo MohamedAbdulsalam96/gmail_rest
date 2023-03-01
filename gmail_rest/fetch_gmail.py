@@ -66,6 +66,7 @@ def fetch():
             if header['name'] == 'Subject':
                 subject = header['value']
                 break
+        
 
         frappe.enqueue(create_ticket,queue='default', data=subject)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
