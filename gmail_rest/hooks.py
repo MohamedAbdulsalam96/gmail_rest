@@ -114,7 +114,7 @@ app_license = "MIT"
 # ---------------
 scheduler_events={
     "cron":{
-        "0 0/1 * 1/1 * ? *":[
+        "* * * * *":[
             "gmail_rest.fetch_gmail.fetch"
         ]
     }
