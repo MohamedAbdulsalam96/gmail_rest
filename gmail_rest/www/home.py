@@ -5,6 +5,7 @@ import googleapiclient.discovery
 from werkzeug.middleware.proxy_fix import ProxyFix
 from frappe.utils import get_url
 import urllib.request
+import json
 
 CLIENT_CONFIG = {
     "web": {
@@ -83,6 +84,15 @@ def oauth2callback():
   credentials = flow.credential
   frappe.session['credentials'] = credentials_to_dict(credentials)
   cred=credentials_to_dict(credentials)
+
+  with open(frappe.get_site_path('site_config.json'),r) as f:
+    data=json.loads(f)
+
+  combined_data={**cred,**data}
+
+  with open(frappe.get_site_path('site_config.json'),'w') as f:
+    json.dumps(combined_data,f,indent=4)
+ 
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = '/app'
   
