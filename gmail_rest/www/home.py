@@ -85,7 +85,7 @@ def oauth2callback():
   frappe.session['credentials'] = credentials_to_dict(credentials)
   cred=credentials_to_dict(credentials)
 
-  with open(frappe.get_site_path('site_config.json'),r) as f:
+  with open(frappe.get_site_path('site_config.json'),'r') as f:
     data=json.loads(f)
 
   combined_data={**cred,**data}
@@ -106,6 +106,7 @@ def credentials_to_dict(credentials):
           'client_id': credentials.client_id,
           'client_secret': credentials.client_secret,
           'scopes': credentials.scopes}
+
 
 #   return flask.redirect(flask.url_for('test_api_request'))
 
