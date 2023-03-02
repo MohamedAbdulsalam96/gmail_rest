@@ -15,10 +15,10 @@ CLIENT_CONFIG = {
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_secret": "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",
         "redirect_uris": [
-            "https://soft-toes-itch-49-207-215-93.loca.lt/oauth2callback"
+            "https://helpdesk.frappe.cloud/oauth2callback"
         ],
         "javascript_origins": [
-            "https://soft-toes-itch-49-207-215-93.loca.lt"
+            "https://helpdesk.frappe.cloud"
         ]
     }
 }
@@ -44,7 +44,7 @@ def authorize():
   # for the OAuth 2.0 client, which you configured in the API Console. If this
   # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
   # error.
-  flow.redirect_uri =get_url('https://soft-toes-itch-49-207-215-93.loca.lt/api/method/gmail_rest.www.home.oauth2callback')
+  flow.redirect_uri =get_url('/api/method/gmail_rest.www.home.oauth2callback')
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
@@ -70,7 +70,7 @@ def oauth2callback():
         client_config=CLIENT_CONFIG,
         scopes=SCOPES,
         state=state)
-  flow.redirect_uri = get_url('https://soft-toes-itch-49-207-215-93.loca.lt /api/method/gmail_rest.www.home.oauth2callback')
+  flow.redirect_uri = get_url('/api/method/gmail_rest.www.home.oauth2callback')
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = frappe.request.url
