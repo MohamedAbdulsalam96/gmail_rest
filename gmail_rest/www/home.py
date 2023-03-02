@@ -27,6 +27,7 @@ SCOPES = [
   'https://www.googleapis.com/auth/gmail.readonly',
   'https://www.googleapis.com/auth/gmail.compose',
   'https://www.googleapis.com/auth/gmail.send',
+  'https://www.googleapis.com/auth/gmail.modify'
 ]
 
 API_SERVICE_NAME = 'gmail'
@@ -82,15 +83,19 @@ def oauth2callback():
   credentials = flow.credential
   frappe.session['credentials'] = credentials_to_dict(credentials)
   cred=credentials_to_dict(credentials)
-  print(cred)
+  frappe.local.response['type'] = 'redirect'
+  frappe.local.response['location'] = '/app'
+  
+  return 
 
-  def credentials_to_dict(credentials):
-    return {'token': credentials.token,
-            'refresh_token': credentials.refresh_token,
-            'token_uri': credentials.token_uri,
-            'client_id': credentials.client_id,
-            'client_secret': credentials.client_secret,
-            'scopes': credentials.scopes}
+def credentials_to_dict(credentials):
+
+  return {'token': credentials.token,
+          'refresh_token': credentials.refresh_token,
+          'token_uri': credentials.token_uri,
+          'client_id': credentials.client_id,
+          'client_secret': credentials.client_secret,
+          'scopes': credentials.scopes}
 
 #   return flask.redirect(flask.url_for('test_api_request'))
 
