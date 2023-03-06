@@ -9,22 +9,7 @@ import imaplib
 import json
 import urllib.request
 
-CLIENT_CONFIG = {
-    "web": {
-        "client_id": "717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com",
-        "project_id": "gleaming-cove-303805",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "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",
-        "redirect_uris": [
-            "https://desk.tridz.in/oauth2callback"
-        ],
-        "javascript_origins": [
-            "https://desk.tridz.in"
-        ]
-    }
-}
+google_credentials=frappe.get_doc('Google Credentials')
 
 SCOPES = [
   'https://www.googleapis.com/auth/gmail.readonly',
@@ -38,7 +23,6 @@ API_VERSION = 'v1'
 
 @frappe.whitelist(allow_guest=True)
 def fetch():
-    google_credentials=frappe.get_doc('Google Credentials')
     cred = google.oauth2.credentials.Credentials(
         token=google_credentials.token,
         refresh_token=google_credentials.refresh_token,

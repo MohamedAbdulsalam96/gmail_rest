@@ -42,7 +42,6 @@ API_VERSION = google_credentials.api_version
 def authorize():
   # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.'
   
-  google_credentials=frappe.get_doc('Google Credentials')
   flow = google_auth_oauthlib.flow.Flow.from_client_config(
         client_config=CLIENT_CONFIG,
         scopes=SCOPES)
@@ -59,10 +58,11 @@ def authorize():
       access_type='offline',
       # Enable incremental authorization. Recommended as a best practice.
       include_granted_scopes='true')
+  google_credentials.db_set('state',state, commit=True)
 
   # Store the state so the callback can verify the auth server response.
-  google_credentials.state = state
-  google_credentials.save(ignore_permissions=True)
+
+  print(google_credentials.client_secret,"helloo")
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = authorization_url
 
@@ -72,7 +72,6 @@ def authorize():
 def oauth2callback():
   # Specify the state when creating the flow in the callback so that it can
   # verified in the authorization server response.
-  google_credentials=frappe.get_doc('Google Credentials')
   state = google_credentials.state
 
   flow = google_auth_oauthlib.flow.Flow.from_client_config(
@@ -91,10 +90,8 @@ def oauth2callback():
   credentials = flow.credentials
   frappe.session['credentials'] = credentials_to_dict(credentials)
   cred=credentials_to_dict(credentials)
-  google_credentials.token = cred['token']
-  google_credentials.refresh_token = cred['refresh_token']
-  google_credentials.insert(ignore_permissions=True)
-  google_credentials.save(ignore_permissions=True) 
+  google_credentials.db_set('token',cred['token'], commit=True)
+  google_credentials.db_set('refresh_token',cred['refresh_token'], commit=True) 
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = '/frappedesk'
   
@@ -102,7 +99,6 @@ def oauth2callback():
 
 @frappe.whitelist(allow_guest=True)
 def revoke():
-  google_credentials=frappe.get_doc('Google Credentials')
   credentials = google.oauth2.credentials.Credentials(
     token=google_credentials.token,
     refresh_token=google_credentials.refresh_token,
