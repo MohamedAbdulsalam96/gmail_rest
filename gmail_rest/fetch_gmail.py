@@ -26,9 +26,9 @@ def fetch():
     cred = google.oauth2.credentials.Credentials(
         token=google_credentials.token,
         refresh_token=google_credentials.refresh_token,
-        token_uri='https://oauth2.googleapis.com/token',
-        client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
-        client_secret='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',
+        token_uri=google_credentials.token_uri,
+        client_id=google_credentials.client_id,
+        client_secret=google_credentials.client_secret,
         scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.modify']
 
     )
@@ -58,7 +58,7 @@ def fetch():
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     response=gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     
-    return
+    return thread_data
 
 def create_ticket(data):
 
