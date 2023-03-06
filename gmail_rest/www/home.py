@@ -7,19 +7,21 @@ from frappe.utils import get_url
 import urllib.request
 import json
 
+
+google_credentials=frappe.get_doc('Google Credentials')
 CLIENT_CONFIG = {
     "web": {
-        "client_id": "717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com",
-        "project_id": "gleaming-cove-303805",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "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",
+        "client_id": google_credentials.client_id,
+        "project_id": google_credentials.project_id,
+        "auth_uri": google_credentials.auth_uri,
+        "token_uri": google_credentials.token_uri,
+        "auth_provider_x509_cert_url": google_credentials.auth_provider_x509_cert_url,
+        "client_secret": google_credentials.client_secret,
         "redirect_uris": [
-            "https://helpdesk.frappe.cloud/oauth2callback"
+            google_credentials.redirect_uri
         ],
         "javascript_origins": [
-            "https://helpdesk.frappe.cloud"
+            google_credentials.javascript_origins
         ]
     }
 }
@@ -31,8 +33,8 @@ SCOPES = [
   'https://www.googleapis.com/auth/gmail.modify'
 ]
 
-API_SERVICE_NAME = 'gmail'
-API_VERSION = 'v1'
+API_SERVICE_NAME = google_credentials.api_service_name
+API_VERSION = google_credentials.api_version
 
 
 @frappe.whitelist()
@@ -84,15 +86,9 @@ def oauth2callback():
   credentials = flow.credential
   frappe.session['credentials'] = credentials_to_dict(credentials)
   cred=credentials_to_dict(credentials)
-
-  with open(frappe.get_site_path('site_config.json'),'r') as f:
-    data=json.loads(f)
-
-  combined_data={**cred,**data}
-
-  with open(frappe.get_site_path('site_config.json'),'w') as f:
-    json.dumps(combined_data,f,indent=4)
- 
+  google_credentials['token'] = cred['token']
+  google_credentials['refresh_token'] = cred['refresh_token']
+  google_credentials.insert() 
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = '/app'
   
