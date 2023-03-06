@@ -38,10 +38,10 @@ API_VERSION = 'v1'
 
 @frappe.whitelist(allow_guest=True)
 def fetch():
-    
+    google_credentials=frappe.get_doc('Google Credentials')
     cred = google.oauth2.credentials.Credentials(
-        token='ya29.a0AVvZVsrvd8VTmNPfEyF4WQPcoY8yldc2iV7w9mgY8O8W6TNpB0K9qMW5N8PFJren9UXT8mFB_1HAgLwpiOPcY6frkxJ4Iu6kbpaPGPebWA1-KDuFRMHVkRXU7PqmZ8uoaJI4WuWVbtKerXGA_WYx93LK-0F8aCgYKAQYSARMSFQGbdwaISn_EweWs1LRk6pABJeXmwQ0163',
-        refresh_token='1//0gsRxz6Fk22O8CgYIARAAGBASNwF-L9IrRW5_wn1CbVPAjSN6tmlQBp-CHMa10udOljvn2ryJH290dgsa7QF6rMLhJdtiZFyr51g',
+        token=google_credentials.token,
+        refresh_token=google_credentials.refresh_token,
         token_uri='https://oauth2.googleapis.com/token',
         client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
         client_secret='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',

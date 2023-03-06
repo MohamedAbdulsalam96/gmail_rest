@@ -41,8 +41,8 @@ API_VERSION = google_credentials.api_version
 @frappe.whitelist()
 def authorize():
   # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.'
-  google_credentials.state="hello",
-  google_credentials.save()
+  
+  google_credentials=frappe.get_doc('Google Credentials')
   flow = google_auth_oauthlib.flow.Flow.from_client_config(
         client_config=CLIENT_CONFIG,
         scopes=SCOPES)
@@ -72,6 +72,7 @@ def authorize():
 def oauth2callback():
   # Specify the state when creating the flow in the callback so that it can
   # verified in the authorization server response.
+  google_credentials=frappe.get_doc('Google Credentials')
   state = google_credentials.state
 
   flow = google_auth_oauthlib.flow.Flow.from_client_config(
@@ -101,6 +102,7 @@ def oauth2callback():
 
 @frappe.whitelist(allow_guest=True)
 def revoke():
+  google_credentials=frappe.get_doc('Google Credentials')
   credentials = google.oauth2.credentials.Credentials(
     token=google_credentials.token,
     refresh_token=google_credentials.refresh_token,
