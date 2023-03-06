@@ -6,6 +6,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from frappe.utils import get_url
 import urllib.request
 import json
+import requests
 
 
 google_credentials=frappe.get_doc('Google Credentials')
@@ -39,7 +40,9 @@ API_VERSION = google_credentials.api_version
 
 @frappe.whitelist()
 def authorize():
-  # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
+  # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.'
+  google_credentials.state="hello",
+  google_credentials.save()
   flow = google_auth_oauthlib.flow.Flow.from_client_config(
         client_config=CLIENT_CONFIG,
         scopes=SCOPES)
@@ -59,7 +62,6 @@ def authorize():
 
   # Store the state so the callback can verify the auth server response.
   google_credentials.state = state
-  google_credentials.insert(ignore_permissions=True)
   google_credentials.save(ignore_permissions=True)
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = authorization_url
@@ -95,7 +97,27 @@ def oauth2callback():
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = '/frappedesk'
   
-  return 
+  return
+
+@frappe.whitelist(allow_guest=True)
+def revoke():
+  credentials = google.oauth2.credentials.Credentials(
+    token=google_credentials.token,
+    refresh_token=google_credentials.refresh_token,
+    token_uri='https://oauth2.googleapis.com/token',
+    client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
+    client_secret='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',
+    scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.modify']
+  ) 
+  revoke = requests.post('https://oauth2.googleapis.com/revoke',
+      params={'token': credentials.token},
+      headers = {'content-type': 'application/x-www-form-urlencoded'})
+
+  status_code = getattr(revoke, 'status_code')
+  if status_code == 200:
+    return frappe.throw('Credentials successfully revoked.')
+  else:
+    return frappe.throw('An error occurred.')
 
 def credentials_to_dict(credentials):
 
