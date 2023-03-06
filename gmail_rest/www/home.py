@@ -59,7 +59,8 @@ def authorize():
 
   # Store the state so the callback can verify the auth server response.
   google_credentials.state = state
-  google_credentials.insert()
+  google_credentials.insert(ignore_permissions=True)
+  google_credentials.save(ignore_permissions=True)
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = authorization_url
 
@@ -89,7 +90,8 @@ def oauth2callback():
   cred=credentials_to_dict(credentials)
   google_credentials.token = cred['token']
   google_credentials.refresh_token = cred['refresh_token']
-  google_credentials.insert() 
+  google_credentials.insert(ignore_permissions=True)
+  google_credentials.save(ignore_permissions=True) 
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = '/app'
   
