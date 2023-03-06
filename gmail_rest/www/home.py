@@ -58,7 +58,8 @@ def authorize():
       include_granted_scopes='true')
 
   # Store the state so the callback can verify the auth server response.
-  frappe.session['state'] = state
+  google_credentials.state = state
+  google_credentials.insert()
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = authorization_url
 
@@ -68,7 +69,7 @@ def authorize():
 def oauth2callback():
   # Specify the state when creating the flow in the callback so that it can
   # verified in the authorization server response.
-  state = frappe.session['state']
+  state = google_credentials.state
 
   flow = google_auth_oauthlib.flow.Flow.from_client_config(
         client_config=CLIENT_CONFIG,
@@ -86,8 +87,8 @@ def oauth2callback():
   credentials = flow.credential
   frappe.session['credentials'] = credentials_to_dict(credentials)
   cred=credentials_to_dict(credentials)
-  google_credentials['token'] = cred['token']
-  google_credentials['refresh_token'] = cred['refresh_token']
+  google_credentials.token = cred.token
+  google_credentials.refresh_token = cred.refresh_token
   google_credentials.insert() 
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = '/app'
