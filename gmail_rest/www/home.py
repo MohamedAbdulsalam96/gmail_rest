@@ -93,7 +93,7 @@ def oauth2callback():
   google_credentials.insert(ignore_permissions=True)
   google_credentials.save(ignore_permissions=True) 
   frappe.local.response['type'] = 'redirect'
-  frappe.local.response['location'] = '/app'
+  frappe.local.response['location'] = '/frappedesk'
   
   return 
 
