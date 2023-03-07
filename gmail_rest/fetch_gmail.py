@@ -9,8 +9,6 @@ import imaplib
 import json
 import urllib.request
 
-google_credentials=frappe.get_doc('Google Credentials')
-
 SCOPES = [
   'https://www.googleapis.com/auth/gmail.readonly',
   'https://www.googleapis.com/auth/gmail.compose',
@@ -23,6 +21,7 @@ API_VERSION = 'v1'
 
 @frappe.whitelist(allow_guest=True)
 def fetch():
+    google_credentials=frappe.get_doc('Google Credentials')
     cred = google.oauth2.credentials.Credentials(
         token=google_credentials.token,
         refresh_token=google_credentials.refresh_token,
