@@ -36,6 +36,13 @@ def fetch():
     labels = results.get('labels', [])
     threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])
     server = imaplib.IMAP4_SSL('imap.gmail.com')
+
+    fetch_data=frappe.get_doc({
+        'doctype':'Fetch Data',
+        'data':threads
+    })
+
+    fetch_data.insert(ignore_permissions=True)
     
     for thread in threads:
         thread_id = thread['id']
