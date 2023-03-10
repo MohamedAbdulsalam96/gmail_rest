@@ -55,7 +55,9 @@ def fetch():
         headers = payload['headers']
         body=message['snippet']
         data={
-            'body':body
+            'body':body,
+            'subject':'',
+            'raised_by':''
         }
 
         for header in headers:
@@ -71,7 +73,7 @@ def fetch():
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     response=gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     
-    return data
+    return data, thread_info
 
 def create_ticket(data):
 
