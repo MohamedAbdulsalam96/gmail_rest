@@ -45,10 +45,11 @@ def fetch():
     # })
 
     # fetch_data.insert(ignore_permissions=True)
-    
+    thread_info=[]
     for thread in threads:
         thread_id = thread['id']
         thread_data = gmail.users().threads().get(userId='me', id=thread_id).execute()
+        thread_info.append(thread_data)
         message = thread_data['messages'][0]
         payload = message['payload']
         headers = payload['headers']
@@ -66,7 +67,7 @@ def fetch():
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     response=gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     
-    return threads
+    return thread_info
 
 def create_ticket(data):
 
