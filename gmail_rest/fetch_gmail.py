@@ -53,29 +53,33 @@ def fetch():
         message = thread_data['messages'][0]
         payload = message['payload']
         headers = payload['headers']
-        subject=''
+        body=message['snippet']
+        data={
+            'body':body
+        }
 
         for header in headers:
             if header['name'] == 'Subject':
-                subject = header['value']
+                data['subject'] = header['value']
                 break
-        
-
-        frappe.enqueue(create_ticket,queue='default', data=subject)
+            if header['name']=='Return-Path':
+                data['raised_by']=header['value']
+                break
+        frappe.enqueue(create_ticket,queue='default', data=data)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     response=gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     
-    return thread_info
+    return data
 
 def create_ticket(data):
 
     ticket=frappe.get_doc({
         'doctype':'Ticket',
-        'subject':data,
-        'raised_by':'user@gmail.com',
-        'description':'' 
+        'subject':data['subject'],
+        'raised_by':data['raised_by'],
+        'description':data['body'] 
     })
     ticket.insert(ignore_permissions=True)
 
