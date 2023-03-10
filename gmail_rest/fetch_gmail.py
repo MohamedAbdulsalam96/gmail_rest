@@ -43,7 +43,7 @@ def fetch():
     })
 
     delimiter=','
-    string=delimiter.join(fetch_data)
+    string=delimiter.join(str(i) for i in fetch_data)
 
     string.insert(ignore_permissions=True)
     
