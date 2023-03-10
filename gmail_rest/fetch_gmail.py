@@ -63,7 +63,7 @@ def fetch():
         for header in headers:
             if header['name'] == 'Subject':
                 data['subject'] = header['value']
-                break
+                
             if header['name']=='Return-Path':
                 data['raised_by']=header['value']
                 break
