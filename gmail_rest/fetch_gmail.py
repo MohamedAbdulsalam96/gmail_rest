@@ -42,6 +42,8 @@ def fetch():
         'data':threads
     })
 
+    fetch_data=json.dumps(fetch_data)
+
     fetch_data.insert(ignore_permissions=True)
     
     for thread in threads:
