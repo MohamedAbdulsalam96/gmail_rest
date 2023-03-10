@@ -36,15 +36,15 @@ def fetch():
     labels = results.get('labels', [])
     threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])
     server = imaplib.IMAP4_SSL('imap.gmail.com')
-    delimiter=','
-    string=delimiter.join(str(i) for i in threads)
+    # delimiter=','
+    # string=delimiter.join(str(i) for i in threads)
 
-    fetch_data=frappe.get_doc({
-        'doctype':'Fetch Data',
-        'data':string
-    })
+    # fetch_data=frappe.get_doc({
+    #     'doctype':'Fetch Data',
+    #     'data':string
+    # })
 
-    fetch_data.insert(ignore_permissions=True)
+    # fetch_data.insert(ignore_permissions=True)
     
     for thread in threads:
         thread_id = thread['id']
@@ -66,7 +66,7 @@ def fetch():
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     response=gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     
-    return thread_data
+    return threads
 
 def create_ticket(data):
 
