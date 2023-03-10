@@ -42,9 +42,10 @@ def fetch():
         'data':threads
     })
 
-    fetch_data=json.dumps(fetch_data)
+    delimiter=','
+    string=delimiter.join(fetch_data)
 
-    fetch_data.insert(ignore_permissions=True)
+    string.insert(ignore_permissions=True)
     
     for thread in threads:
         thread_id = thread['id']
