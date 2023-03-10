@@ -11,13 +11,13 @@
  "fields": [
   {
    "fieldname": "data",
-   "fieldtype": "Long Text",
+   "fieldtype": "JSON",
    "label": "Data"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-07 12:41:46.301270",
+ "modified": "2023-03-10 17:16:36.309248",
  "modified_by": "Administrator",
  "module": "Gmail Rest",
  "name": "Fetch Data",
