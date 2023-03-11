@@ -61,12 +61,16 @@ def fetch():
         }
 
         for header in headers:
-            if header['name'] == 'Subject':
-                data['subject'] = header['value']
-                
-            if header['name']=='Return-Path':
-                data['raised_by']=header['value']
-                break
+            try:
+                if header['name'] == 'Subject':
+                    data['subject'] = header['value']
+            except:
+                pass
+            try:
+                if header['name']=='Return-Path':
+                    data['raised_by']=header['value']
+            except:
+                pass
         frappe.enqueue(create_ticket,queue='default', data=data)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
 
