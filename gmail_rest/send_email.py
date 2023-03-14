@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 @frappe.whitelist()
-def gmail_send_message():
+def gmail_send_message(ticket,message,cc,bcc):
     """Create and send an email message
     Print the returned  message id
     Returns: Message object, including message id
@@ -18,6 +18,32 @@ def gmail_send_message():
     TODO(developer) - See https://developers.google.com/identity
     for guides on implementing OAuth2 for the application.
     """
+    ticket_doc = frappe.get_doc("Ticket", ticket)
+    communication = frappe.new_doc("Communication")
+    communication.update(
+		{
+			"communication_type": "Communication",
+			"communication_medium": "Email",
+			"sent_or_received": "Sent",
+			"email_status": "Open",
+			"subject": "Re: " + ticket_doc.subject + f" (#{ticket_doc.name})",
+			"sender": frappe.session.user,
+			"recipients": frappe.get_value("User", "Administrator", "email")
+			if ticket_doc.raised_by == "Administrator"
+			else ticket_doc.raised_by,
+			"cc": cc,
+			"bcc": bcc,
+			"content": message,
+			"status": "Linked",
+			"reference_doctype": "Ticket",
+			"reference_name": ticket_doc.name,
+		}
+	)
+    communication.ignore_permissions = True
+    communication.ignore_mandatory = True
+    communication.save(ignore_permissions=True)
+
+
     google_credentials=frappe.get_doc('Google Credentials')
     creds = google.oauth2.credentials.Credentials(
         token=google_credentials.token,
@@ -53,4 +79,5 @@ def gmail_send_message():
     except HttpError as error:
         print(F'An error occurred: {error}')
         send_message = None
+
     return send_message
