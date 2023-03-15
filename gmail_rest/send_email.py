@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 @frappe.whitelist()
-def gmail_send_message(ticket,message,cc,bcc):
+def gmail_send_message(ticket_id,content,cc,bcc):
     """Create and send an email message
     Print the returned  message id
     Returns: Message object, including message id
@@ -18,7 +18,7 @@ def gmail_send_message(ticket,message,cc,bcc):
     TODO(developer) - See https://developers.google.com/identity
     for guides on implementing OAuth2 for the application.
     """
-    ticket_doc = frappe.get_doc("Ticket", ticket)
+    ticket_doc = frappe.get_doc("Ticket", ticket_id)
     communication = frappe.new_doc("Communication")
     communication.update(
 		{
@@ -33,7 +33,7 @@ def gmail_send_message(ticket,message,cc,bcc):
 			else ticket_doc.raised_by,
 			"cc": cc,
 			"bcc": bcc,
-			"content": message,
+			"content": content,
 			"status": "Linked",
 			"reference_doctype": "Ticket",
 			"reference_name": ticket_doc.name,
@@ -59,11 +59,11 @@ def gmail_send_message(ticket,message,cc,bcc):
         service = build('gmail', 'v1', credentials=creds)
         message = EmailMessage()
 
-        message.set_content('This is automated draft mail')
+        message.set_content(content)
 
-        message['To'] = 'fadilsiddique@gmail.com'
+        message['To'] = ticket_doc.raised_by
         message['From'] = 'koksalfadil@gmail.com'
-        message['Subject'] = 'Automated draft'
+        message['Subject'] = ticket_doc.subject
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
