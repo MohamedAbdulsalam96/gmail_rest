@@ -1,13 +1,7 @@
 import frappe
 import google.oauth2.credentials
-import google_auth_oauthlib.flow
 import googleapiclient.discovery
-from werkzeug.middleware.proxy_fix import ProxyFix
-from frappe.utils import get_url
-import base64
 import imaplib
-import json
-import urllib.request
 
 SCOPES = [
   'https://www.googleapis.com/auth/gmail.readonly',
@@ -34,7 +28,7 @@ def fetch():
     gmail = googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=cred)
     results = gmail.users().labels().list(userId='me').execute()
     labels = results.get('labels', [])
-    threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])
+    threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])  
     server = imaplib.IMAP4_SSL('imap.gmail.com')
     # delimiter=','
     # string=delimiter.join(str(i) for i in threads)

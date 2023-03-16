@@ -65,12 +65,18 @@ def gmail_send_message(ticket_id,content,cc,bcc):
         message['From'] = 'koksalfadil@gmail.com'
         message['Subject'] = ticket_doc.subject
 
+        threads = service.users().threads().list(
+            userId='me', q='subject:"{}"'.format(ticket_doc.subject)).execute().get('threads', [])
+
+        thread_id = threads[0]['id'] if threads else None
+
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
             .decode()
 
         create_message = {
-            'raw': encoded_message
+            'raw': encoded_message,
+            'threadId': thread_id
         }
         # pylint: disable=E1101
         send_message = (service.users().messages().send
@@ -79,5 +85,5 @@ def gmail_send_message(ticket_id,content,cc,bcc):
     except HttpError as error:
         print(F'An error occurred: {error}')
         send_message = None
-
+    
     return send_message

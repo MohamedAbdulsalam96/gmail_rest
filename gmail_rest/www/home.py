@@ -1,11 +1,7 @@
 import frappe
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
-import googleapiclient.discovery
-from werkzeug.middleware.proxy_fix import ProxyFix
 from frappe.utils import get_url
-import urllib.request
-import json
 import requests
 
 
@@ -62,7 +58,7 @@ def authorize():
 
   # Store the state so the callback can verify the auth server response.
 
-  print(google_credentials.client_secret,"helloo")
+
   frappe.local.response['type'] = 'redirect'
   frappe.local.response['location'] = authorization_url
 
