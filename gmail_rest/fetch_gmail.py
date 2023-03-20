@@ -51,7 +51,8 @@ def fetch():
         data={
             'body':body,
             'subject':'',
-            'raised_by':''
+            'raised_by':'',
+            'first_name':''
         }
 
         for header in headers:
@@ -62,18 +63,27 @@ def fetch():
                 pass
             try:
                 if header['name']=='Return-Path':
-                    data['raised_by']=header['value']
+                    value=header['value']
+                    data['raised_by']=value.replace("<","").replace(">","")
             except:
                 pass
+            try:
+                if header['name'] == 'From':
+                    value = header['value']
+                    data['first_name']=value.split(' ')[0]
+            except:
+                pass
+
         frappe.enqueue(create_ticket,queue='default', data=data)
-        # thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
+        frappe.enqueue(create_contact,queue='default',data=data)
+        thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     
-    # try:
-    #     gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
-    # except:
-    #     frappe.throw('Email not marked as unread in gmail. An error occured')
+    try:
+        gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
+    except:
+        frappe.throw('Email not marked as unread in gmail. An error occured')
     return threads, thread_info
 
 def create_ticket(data):
@@ -87,16 +97,16 @@ def create_ticket(data):
     ticket.insert(ignore_permissions=True)
 
 def create_contact(data):
-    if not frappe.db.exists('Contact',{'email_id':data['email_id']}):
+    if not frappe.db.exists('Contact',{'email_id':data['raised_by']}):
         doc=frappe.get_doc({
             'doctype':'Ticket',
             'status':'Passive',
             'first_name':data['name'],
-            'email_id':data['email_id']
+            'email_id':data['raised_by']
             })
         email_id={
             'doctype':'Contact Email',
-            'email_id':data['email_id']
+            'email_id':data['raised_by']
         }
         doc.append('email_ids',email_id)
 
