@@ -74,7 +74,7 @@ def fetch():
         gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     except:
         frappe.throw('Email not marked as unread in gmail. An error occured')
-    return
+    return thread_data
 
 def create_ticket(data):
 
@@ -85,4 +85,21 @@ def create_ticket(data):
         'description':data['body'] 
     })
     ticket.insert(ignore_permissions=True)
+
+def create_contact(data):
+    if not frappe.db.exists('Contact',{'email_id':data['email_id']}):
+        doc=frappe.get_doc({
+            'doctype':'Ticket',
+            'status':'Passive',
+            'first_name':data['name'],
+            'email_id':data['email_id']
+            })
+        email_id={
+            'doctype':'Contact Email',
+            'email_id':data['email_id']
+        }
+        doc.append('email_ids',email_id)
+
+        doc.save()
+
 
