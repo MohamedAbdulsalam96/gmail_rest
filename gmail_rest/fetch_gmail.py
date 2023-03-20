@@ -70,10 +70,10 @@ def fetch():
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     
-    try:
-        gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
-    except:
-        frappe.throw('Email not marked as unread in gmail. An error occured')
+    # try:
+    #     gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
+    # except:
+    #     frappe.throw('Email not marked as unread in gmail. An error occured')
     return thread_data
 
 def create_ticket(data):
