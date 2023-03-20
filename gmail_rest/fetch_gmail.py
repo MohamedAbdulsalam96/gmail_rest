@@ -103,7 +103,6 @@ def create_contact(data):
             'status':'Passive',
             'first_name':data['first_name'],
             'email_id':data['raised_by'],
-            'user':data['raised_by']
             })
 
         email_id={
