@@ -66,7 +66,7 @@ def fetch():
             except:
                 pass
         frappe.enqueue(create_ticket,queue='default', data=data)
-        thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
+        # thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
     
@@ -74,7 +74,7 @@ def fetch():
     #     gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     # except:
     #     frappe.throw('Email not marked as unread in gmail. An error occured')
-    return thread_data
+    return threads
 
 def create_ticket(data):
 
