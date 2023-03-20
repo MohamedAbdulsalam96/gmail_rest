@@ -99,11 +99,11 @@ def create_ticket(data):
 def create_contact(data):
     if not frappe.db.exists('Contact',{'email_id':data['raised_by']}):
         doc=frappe.get_doc({
-            'doctype':'Ticket',
+            'doctype':'Contact',
             'status':'Passive',
             'first_name':data['first_name'],
             'email_id':data['raised_by']
             })
-        doc.save()
+        doc.insert(ignore_permissions=True)
 
 
