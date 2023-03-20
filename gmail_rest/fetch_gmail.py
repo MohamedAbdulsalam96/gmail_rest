@@ -101,9 +101,14 @@ def create_contact(data):
         doc=frappe.get_doc({
             'doctype':'Contact',
             'status':'Passive',
-            'first_name':data['first_name'],
-            'email_id':data['raised_by']
+            'first_name':data['first_name']
             })
+
+        email_id={
+            'doctype':"Contact Email",
+            'email_id':data['raised_by']
+        }
+        doc.append("email_ids",email_id)
         doc.insert(ignore_permissions=True)
 
 
