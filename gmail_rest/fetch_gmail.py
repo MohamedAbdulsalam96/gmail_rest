@@ -30,15 +30,7 @@ def fetch():
     labels = results.get('labels', [])
     threads = gmail.users().threads().list(userId='me',q='is:unread').execute().get('threads', [])  
     server = imaplib.IMAP4_SSL('imap.gmail.com')
-    # delimiter=','
-    # string=delimiter.join(str(i) for i in threads)
 
-    # fetch_data=frappe.get_doc({
-    #     'doctype':'Fetch Data',
-    #     'data':string
-    # })
-
-    # fetch_data.insert(ignore_permissions=True)
     thread_info=[]
     for thread in threads:
         thread_id = thread['id']
@@ -84,7 +76,7 @@ def fetch():
         gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     except:
         frappe.throw('Email not marked as unread in gmail. An error occured')
-    return threads, thread_info
+    return
 
 def create_ticket(data):
 
