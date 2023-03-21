@@ -72,13 +72,18 @@ def gmail_send_message(ticket_id,content,cc,bcc):
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
-            .decode()
+            .decode()                        (userId="me", body=create_message).execute())
+
 
         create_message = {
             'raw': encoded_message,
             'threadId': thread_id
         }
         # pylint: disable=E1101
+        try:
+            service.users().threads().list(userId='me', q='subject:"{}"'.format(ticket_doc.subject)).execute().get('threads', [])
+        except:
+            pass
         send_message = (service.users().messages().send
                         (userId="me", body=create_message).execute())
         print(F'Message Id: {send_message["id"]}')
