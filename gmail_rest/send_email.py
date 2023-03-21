@@ -62,7 +62,7 @@ def gmail_send_message(ticket_id,content,cc,bcc):
         message.set_content(content)
 
         message['To'] = ticket_doc.raised_by
-        message['From'] = 'koksalfadil@gmail.com'
+        message['From'] = google_credentials.email
         message['Subject'] = ticket_doc.subject
 
         threads = service.users().threads().list(
