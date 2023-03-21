@@ -72,8 +72,7 @@ def gmail_send_message(ticket_id,content,cc,bcc):
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
-            .decode()                        (userId="me", body=create_message).execute())
-
+            .decode()
 
         create_message = {
             'raw': encoded_message,
