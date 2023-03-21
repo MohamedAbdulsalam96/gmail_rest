@@ -94,7 +94,6 @@ def create_contact(data):
             'doctype':'Contact',
             'status':'Passive',
             'first_name':data['first_name'],
-            'email_id':data['raised_by'],
             })
 
         email_id={
@@ -102,6 +101,7 @@ def create_contact(data):
             'email_id':data['raised_by']
         }
         doc.append("email_ids",email_id)
+        doc.db_set('email_id',data['raised_by'], commit=True)
         doc.insert(ignore_permissions=True)
 
 
