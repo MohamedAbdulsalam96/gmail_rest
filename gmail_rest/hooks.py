@@ -112,13 +112,13 @@ app_license = "MIT"
 
 # Scheduled Tasks
 # ---------------
-scheduler_events={
-    "cron":{
-        "* * * * *":[
-            "gmail_rest.fetch_gmail.fetch"
-        ]
-    }
-}
+# scheduler_events={
+#     "cron":{
+#         "* * * * *":[
+#             "gmail_rest.fetch_gmail.fetch"
+#         ]
+#     }
+# }
 # scheduler_events = {
 #	"all": [
 #		"gmail_rest.tasks.all"
