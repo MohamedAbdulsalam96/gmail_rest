@@ -3,26 +3,23 @@ import google.oauth2.credentials
 import googleapiclient.discovery
 import imaplib
 
-SCOPES = [
-  'https://www.googleapis.com/auth/gmail.readonly',
-  'https://www.googleapis.com/auth/gmail.compose',
-  'https://www.googleapis.com/auth/gmail.send',
-  'https://www.googleapis.com/auth/gmail.modify'
-]
+SCOPES = []
 
 API_SERVICE_NAME = 'gmail'
 API_VERSION = 'v1'
 
 @frappe.whitelist(allow_guest=True)
 def fetch():
-    google_credentials=frappe.get_doc('Google Credentials')
+    google_credentials=frappe.get_doc('Email Credentials')
+    for scope in google_credentials.scope:
+        SCOPES.append(scope.scopes)
     cred = google.oauth2.credentials.Credentials(
         token=google_credentials.token,
         refresh_token=google_credentials.refresh_token,
         token_uri=google_credentials.token_uri,
         client_id=google_credentials.client_id,
         client_secret=google_credentials.client_secret,
-        scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.modify']
+        scopes=SCOPES
 
     )
     gmail = googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=cred)

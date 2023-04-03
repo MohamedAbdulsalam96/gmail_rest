@@ -8,6 +8,8 @@ import google.auth
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+SCOPES =[]
+
 @frappe.whitelist()
 def gmail_send_message(ticket_id,content,cc,bcc):
     """Create and send an email message
@@ -44,14 +46,18 @@ def gmail_send_message(ticket_id,content,cc,bcc):
     communication.save(ignore_permissions=True)
 
 
-    google_credentials=frappe.get_doc('Google Credentials')
+    google_credentials=frappe.get_doc('Email Credentials')
+    
+    for scope in google_credentials.scope:
+        SCOPES.append(scope.scopes)
+    
     creds = google.oauth2.credentials.Credentials(
         token=google_credentials.token,
         refresh_token=google_credentials.refresh_token,
         token_uri=google_credentials.token_uri,
         client_id=google_credentials.client_id,
         client_secret=google_credentials.client_secret,
-        scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.modify']
+        scopes=SCOPES
 
     )
 

@@ -5,7 +5,7 @@ from frappe.utils import get_url
 import requests
 
 
-google_credentials=frappe.get_doc('Google Credentials')
+google_credentials=frappe.get_doc('Email Credentials')
 CLIENT_CONFIG = {
     "web": {
         "client_id": google_credentials.client_id,
@@ -23,12 +23,11 @@ CLIENT_CONFIG = {
     }
 }
 
-SCOPES = [
-  'https://www.googleapis.com/auth/gmail.readonly',
-  'https://www.googleapis.com/auth/gmail.compose',
-  'https://www.googleapis.com/auth/gmail.send',
-  'https://www.googleapis.com/auth/gmail.modify'
-]
+SCOPES = []
+
+for scope in google_credentials.scope:
+    SCOPES.append(scope.scopes)
+ 
 
 API_SERVICE_NAME = google_credentials.api_service_name
 API_VERSION = google_credentials.api_version
@@ -46,7 +45,7 @@ def authorize():
   # for the OAuth 2.0 client, which you configured in the API Console. If this
   # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
   # error.
-  flow.redirect_uri =get_url('https://helpdesk.frappe.cloud/api/method/gmail_rest.www.home.oauth2callback')
+  flow.redirect_uri =get_url('https://helpdesk.frappe.cloud/api/method/gmail_rest.gmail_rest.email.gmail.oauth.oauth2callback')
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
@@ -98,10 +97,10 @@ def revoke():
   credentials = google.oauth2.credentials.Credentials(
     token=google_credentials.token,
     refresh_token=google_credentials.refresh_token,
-    token_uri='https://oauth2.googleapis.com/token',
-    client_id='717601971902-mufkvcdek70evo34uhq9r6u3up25lgm7.apps.googleusercontent.com',
-    client_secret='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',
-    scopes=['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.modify']
+    token_uri=google_credentials.token_uri,
+    client_id=google_credentials.client_id,
+    client_secret=google_credentials.client_secret,
+    scopes=SCOPES
   ) 
   revoke = requests.post('https://oauth2.googleapis.com/revoke',
       params={'token': credentials.token},
@@ -126,3 +125,4 @@ def credentials_to_dict(credentials):
 #   return flask.redirect(flask.url_for('test_api_request'))
 
 
+ 
