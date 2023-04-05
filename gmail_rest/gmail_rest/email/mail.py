@@ -15,7 +15,7 @@ def sendmail(
         gmail_send_message(
             doctype=doctype,
             name=name,
-            recipients=name,
+            recipients=recipients,
             subject=subject,
             content=content,
             cc=cc,
