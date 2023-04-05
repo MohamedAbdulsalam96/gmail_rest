@@ -59,7 +59,6 @@ app_license = "MIT"
 #	"methods": "gmail_rest.utils.jinja_methods",
 #	"filters": "gmail_rest.utils.jinja_filters"
 # }
-
 # Installation
 # ------------
 

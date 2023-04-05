@@ -11,7 +11,15 @@ from googleapiclient.errors import HttpError
 SCOPES =[]
 
 @frappe.whitelist()
-def gmail_send_message(ticket_id,content,cc,bcc):
+def gmail_send_message(
+    doctype=None,
+    name=None,
+    recipients=None,
+    subject=None,
+    content=None,
+    cc=None,
+    bcc=None
+):
     """Create and send an email message
     Print the returned  message id
     Returns: Message object, including message id
@@ -20,30 +28,30 @@ def gmail_send_message(ticket_id,content,cc,bcc):
     TODO(developer) - See https://developers.google.com/identity
     for guides on implementing OAuth2 for the application.
     """
-    ticket_doc = frappe.get_doc("Ticket", ticket_id)
-    communication = frappe.new_doc("Communication")
-    communication.update(
-		{
-			"communication_type": "Communication",
-			"communication_medium": "Email",
-			"sent_or_received": "Sent",
-			"email_status": "Open",
-			"subject": "Re: " + ticket_doc.subject + f" (#{ticket_doc.name})",
-			"sender": frappe.session.user,
-			"recipients": frappe.get_value("User", "Administrator", "email")
-			if ticket_doc.raised_by == "Administrator"
-			else ticket_doc.raised_by,
-			"cc": cc,
-			"bcc": bcc,
-			"content": content,
-			"status": "Linked",
-			"reference_doctype": "Ticket",
-			"reference_name": ticket_doc.name,
-		}
-	)
-    communication.ignore_permissions = True
-    communication.ignore_mandatory = True
-    communication.save(ignore_permissions=True)
+    doc = frappe.get_doc(doctype, name)
+    # communication = frappe.new_doc("Communication")
+    # communication.update(
+	# 	{
+	# 		"communication_type": "Communication",
+	# 		"communication_medium": "Email",
+	# 		"sent_or_received": "Sent",
+	# 		"email_status": "Open",
+	# 		"subject": "Re: " + doc.subject + f" (#{doc.name})",
+	# 		"sender": frappe.session.user,
+	# 		"recipients": frappe.get_value("User", "Administrator", "email")
+	# 		if doc.raised_by == "Administrator"
+	# 		else doc.raised_by,
+	# 		"cc": cc,
+	# 		"bcc": bcc,
+	# 		"content": content,
+	# 		"status": "Linked",
+	# 		"reference_doctype": doctype,
+	# 		"reference_name": doc.name,
+	# 	}
+	# )
+    # communication.ignore_permissions = True
+    # communication.ignore_mandatory = True
+    # communication.save(ignore_permissions=True)
 
 
     google_credentials=frappe.get_doc('Email Credentials')
@@ -67,12 +75,12 @@ def gmail_send_message(ticket_id,content,cc,bcc):
 
         message.set_content(content)
 
-        message['To'] = ticket_doc.raised_by
+        message['To'] = recipients
         message['From'] = google_credentials.email
-        message['Subject'] = ticket_doc.subject
-
+        message['Subject'] = subject
+  
         threads = service.users().threads().list(
-            userId='me', q='subject:"{}"'.format(ticket_doc.subject)).execute().get('threads', [])
+            userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
 
         thread_id = threads[0]['id'] if threads else None
 
@@ -86,7 +94,7 @@ def gmail_send_message(ticket_id,content,cc,bcc):
         }
         # pylint: disable=E1101
         try:
-            service.users().threads().list(userId='me', q='subject:"{}"'.format(ticket_doc.subject)).execute().get('threads', [])
+            service.users().threads().list(userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
         except:
             pass
         send_message = (service.users().messages().send
