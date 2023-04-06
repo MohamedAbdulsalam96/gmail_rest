@@ -6,6 +6,8 @@ import requests
 
 
 google_credentials=frappe.get_doc('Email Credentials')
+js_origin=google_credentials.javascript_origins
+
 CLIENT_CONFIG = {
     "web": {
         "client_id": google_credentials.client_id,
@@ -45,7 +47,7 @@ def authorize():
   # for the OAuth 2.0 client, which you configured in the API Console. If this
   # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
   # error.
-  flow.redirect_uri =get_url('https://helpdesk.frappe.cloud/api/method/gmail_rest.gmail_rest.email.gmail.oauth.oauth2callback')
+  flow.redirect_uri =get_url(f'{js_origin}/api/method/gmail_rest.gmail_rest.email.gmail.oauth.oauth2callback')
 
   authorization_url, state = flow.authorization_url(
       # Enable offline access so that you can refresh an access token without
@@ -73,7 +75,7 @@ def oauth2callback():
         client_config=CLIENT_CONFIG,
         scopes=SCOPES,
         state=state)
-  flow.redirect_uri = get_url('https://helpdesk.frappe.cloud/api/method/gmail_rest.gmail_rest.email.gmail.oauth.oauth2callback')
+  flow.redirect_uri = get_url(f'{js_origin}/api/method/gmail_rest.gmail_rest.email.gmail.oauth.oauth2callback')
 
   # Use the authorization server's response to fetch the OAuth 2.0 tokens.
   authorization_response = frappe.request.url

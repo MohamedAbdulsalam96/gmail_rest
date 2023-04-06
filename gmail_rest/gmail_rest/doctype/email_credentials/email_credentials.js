@@ -4,7 +4,7 @@
 frappe.ui.form.on('Email Credentials', {
 	refresh: function(frm) {
 		frm.add_custom_button(__('Add Account'),function(){
-			window.location.href="https://helpdesk.frappe.cloud/api/method/gmail_rest.gmail_rest.email.gmail.oauth.authorize"
+			window.location.href="/api/method/gmail_rest.gmail_rest.email.gmail.oauth.authorize"
 
 		},__("Account Settings"))
 		frm.add_custom_button(__('Revoke'),function(){
