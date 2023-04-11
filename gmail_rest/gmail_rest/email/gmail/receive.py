@@ -85,6 +85,28 @@ def create_ticket(data):
     })
     ticket.insert(ignore_permissions=True)
 
+    communication = frappe.new_doc("Communication")
+    communication.update(
+		{
+			"communication_type": "Communication",
+			"communication_medium": "Email",
+			"sent_or_received": "Received",
+			"email_status": "Open",
+			"subject": "Re: " + data['subject'] + f" (#{ticket.name})",
+			"sender": frappe.session.user,
+			"recipients": frappe.get_value("User", "Administrator", "email")
+			if data['raised_by'] == "Administrator"
+			else data['raised_by'],
+			"content": data['body'],
+			"status": "Linked",
+			"reference_doctype": "Ticket",
+			"reference_name": ticket.name,
+		}
+	)
+    communication.ignore_permissions = True
+    communication.ignore_mandatory = True
+    communication.save(ignore_permissions=True)
+
 def create_contact(data):
     if not frappe.db.exists('Contact',{'email_id':data['raised_by']}):
         doc=frappe.get_doc({
@@ -100,5 +122,7 @@ def create_contact(data):
         doc.append("email_ids",email_id)
         doc.db_set('email_id',data['raised_by'], commit=True)
         doc.insert(ignore_permissions=True)
+
+
 
 
