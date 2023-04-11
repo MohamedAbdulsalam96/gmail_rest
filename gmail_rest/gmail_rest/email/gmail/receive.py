@@ -41,7 +41,8 @@ def fetch():
             'body':body,
             'subject':'',
             'raised_by':'',
-            'first_name':''
+            'first_name':'',
+            'email':google_credentials.email
         }
 
         for header in headers:
@@ -87,16 +88,15 @@ def create_ticket(data):
 
     communication = frappe.new_doc("Communication")
     communication.update(
+
 		{
 			"communication_type": "Communication",
 			"communication_medium": "Email",
 			"sent_or_received": "Received",
 			"email_status": "Open",
 			"subject": "Re: " + data['subject'] + f" (#{ticket.name})",
-			"sender": frappe.session.user,
-			"recipients": frappe.get_value("User", "Administrator", "email")
-			if data['raised_by'] == "Administrator"
-			else data['raised_by'],
+			"sender": data['raised_by'],
+			"recipients":data['email'],
 			"content": data['body'],
 			"status": "Linked",
 			"reference_doctype": "Ticket",
