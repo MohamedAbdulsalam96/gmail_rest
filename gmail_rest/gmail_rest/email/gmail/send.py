@@ -28,7 +28,7 @@ def gmail_send_message(
     TODO(developer) - See https://developers.google.com/identity
     for guides on implementing OAuth2 for the application.
     """
-    doc=frappe.get_doc(doctype,name)
+    doc=frappe.get_doc("Ticket",name)
     communication = frappe.new_doc("Communication")
     communication.update(
 		{
