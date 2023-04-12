@@ -28,29 +28,30 @@ def gmail_send_message(
     TODO(developer) - See https://developers.google.com/identity
     for guides on implementing OAuth2 for the application.
     """
-    # communication = frappe.new_doc("Communication")
-    # communication.update(
-	# 	{
-	# 		"communication_type": "Communication",
-	# 		"communication_medium": "Email",
-	# 		"sent_or_received": "Sent",
-	# 		"email_status": "Open",
-	# 		"subject": "Re: " + doc.subject + f" (#{doc.name})",
-	# 		"sender": frappe.session.user,
-	# 		"recipients": frappe.get_value("User", "Administrator", "email")
-	# 		if doc.raised_by == "Administrator"
-	# 		else doc.raised_by,
-	# 		"cc": cc,
-	# 		"bcc": bcc,
-	# 		"content": content,
-	# 		"status": "Linked",
-	# 		"reference_doctype": doctype,
-	# 		"reference_name": doc.name,
-	# 	}
-	# )
-    # communication.ignore_permissions = True
-    # communication.ignore_mandatory = True
-    # communication.save(ignore_permissions=True)
+    doc=frappe.get_doc(doctype,name)
+    communication = frappe.new_doc("Communication")
+    communication.update(
+		{
+			"communication_type": "Communication",
+			"communication_medium": "Email",
+			"sent_or_received": "Sent",
+			"email_status": "Open",
+			"subject": "Re: " + doc.subject + f" (#{doc.name})",
+			"sender": frappe.session.user,
+			"recipients": frappe.get_value("User", "Administrator", "email")
+			if doc.raised_by == "Administrator"
+			else doc.raised_by,
+			"cc": cc,
+			"bcc": bcc,
+			"content": content,
+			"status": "Linked",
+			"reference_doctype": doctype,
+			"reference_name": doc.name,
+		}
+	)
+    communication.ignore_permissions = True
+    communication.ignore_mandatory = True
+    communication.save(ignore_permissions=True)
 
 
     google_credentials=frappe.get_doc('Email Credentials')
