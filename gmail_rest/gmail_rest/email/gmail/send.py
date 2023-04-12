@@ -41,7 +41,7 @@ def gmail_send_message(
 			"recipients": doc.raised_by,
 			"content": content,
 			"status": "Linked",
-			"reference_doctype": doctype,
+			"reference_doctype": "Ticket",
 			"reference_name": doc.name,
 		}
 	)
