@@ -38,11 +38,7 @@ def gmail_send_message(
 			"email_status": "Open",
 			"subject": "Re: " + doc.subject + f" (#{doc.name})",
 			"sender": frappe.session.user,
-			"recipients": frappe.get_value("User", "Administrator", "email")
-			if doc.raised_by == "Administrator"
-			else doc.raised_by,
-			"cc": cc,
-			"bcc": bcc,
+			"recipients": doc.raised_by,
 			"content": content,
 			"status": "Linked",
 			"reference_doctype": doctype,
