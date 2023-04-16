@@ -74,7 +74,7 @@ def fetch():
         gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     except:
         frappe.throw('Email not marked as unread in gmail. An error occured')
-    return
+    return thread_info
 
 def create_ticket(data):
 
@@ -86,26 +86,7 @@ def create_ticket(data):
     })
     ticket.insert(ignore_permissions=True)
 
-    communication = frappe.new_doc("Communication")
-    communication.update(
-
-		{
-			"communication_type": "Communication",
-			"communication_medium": "Email",
-			"sent_or_received": "Received",
-			"email_status": "Open",
-			"subject": "Re: " + data['subject'] + f" (#{ticket.name})",
-			"sender": data['raised_by'],
-			"recipients":data['email'],
-			"content": data['body'],
-			"status": "Linked",
-			"reference_doctype": "Ticket",
-			"reference_name": ticket.name,
-		}
-	)
-    communication.ignore_permissions = True
-    communication.ignore_mandatory = True
-    communication.save(ignore_permissions=True)
+    create_parent_communication(data=data,ticket=ticket)
 
 def create_contact(data):
     if not frappe.db.exists('Contact',{'email_id':data['raised_by']}):
@@ -122,6 +103,52 @@ def create_contact(data):
         doc.append("email_ids",email_id)
         doc.db_set('email_id',data['raised_by'], commit=True)
         doc.insert(ignore_permissions=True)
+
+def create_parent_communication(data,ticket):
+    communication = frappe.new_doc("Communication")
+    communication.update(
+
+		{
+			"communication_type": "Communication",
+			"communication_medium": "Email",
+			"sent_or_received": "Received",
+			"email_status": "Open",
+			"subject": data['subject'],
+			"sender": data['raised_by'],
+			"recipients":data['email'],
+			"content": data['body'],
+			"status": "Linked",
+			"reference_doctype": "Ticket",
+			"reference_name": ticket.name,
+		}
+	)
+    communication.ignore_permissions = True
+    communication.ignore_mandatory = True
+    communication.save(ignore_permissions=True)
+
+def create_communication_thread(data,ticket):
+    communication = frappe.new_doc("Communication")
+    communication.update(
+ 
+		{
+			"communication_type": "Communication",
+			"communication_medium": "Email",
+			"sent_or_received": "Received",
+			"email_status": "Open",
+			"subject":"Re:" + data['subject'] + f" (#{ticket.name})",
+			"sender": data['raised_by'],
+			"recipients":data['email'],
+			"content": data['body'],
+			"status": "Linked",
+			"reference_doctype": "Ticket",
+			"reference_name": ticket.name,
+		}
+	)
+    communication.ignore_permissions = True
+    communication.ignore_mandatory = True
+    communication.save(ignore_permissions=True)
+
+
 
 
 
