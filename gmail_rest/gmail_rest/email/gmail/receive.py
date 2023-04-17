@@ -71,7 +71,7 @@ def fetch():
             except:
                 pass
             try:
-                if header['name']=='Message-Id':
+                if header['name']=='Message-ID':
                     value=header['value']
                     data['message_id']=value
             except:
