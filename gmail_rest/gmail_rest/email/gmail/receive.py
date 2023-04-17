@@ -47,7 +47,7 @@ def fetch():
             'thread_id':thread_id
         }
 
-        for msg in thread['messages']:
+        for msg in thread_data['messages']:
             message_id=msg['id']
             message_data = gmail.users().messages().get(userId='me', id=message_id, format='full').execute()
             message_info.append(message_data)
