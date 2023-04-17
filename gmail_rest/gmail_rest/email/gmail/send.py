@@ -88,6 +88,7 @@ def gmail_send_message(
         message['From'] = google_credentials.email
         message['Subject'] = subject
         message['Reply-To']=google_credentials.email
+        message['In-Reply-To']='<CALFBqx51f4G6bjNhj4MR9UT4xYMp8X5v4VQJadiUio=uoRpV8w@mail.gmail.com>'
 
   
         threads = service.users().threads().list(
