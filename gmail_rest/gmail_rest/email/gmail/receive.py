@@ -43,7 +43,7 @@ def fetch():
             'raised_by':'',
             'first_name':'',
             'email':google_credentials.email,
-            'thread_id':''
+            'thread_id':thread_id
         }
 
         for header in headers:
@@ -64,9 +64,14 @@ def fetch():
                     data['first_name']=value.split(' ')[0]
             except:
                 pass
-
-        frappe.enqueue(create_ticket,queue='default', data=data)
-        frappe.enqueue(create_contact,queue='default',data=data)
+        communications = frappe.get_doc("Communication",filters={
+        'message_id':thread_id
+        })
+        if not communications:
+            frappe.enqueue(create_ticket,queue='default', data=data)
+            frappe.enqueue(create_contact,queue='default',data=data)
+        else:
+            create_communication_thread(data=data,ticket=communications.reference_name)
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
@@ -86,7 +91,7 @@ def create_ticket(data):
         'description':data['body'] 
     })
     ticket.insert(ignore_permissions=True)
-    communications = frappe.get_doc("Communication")
+
     create_parent_communication(data=data,ticket=ticket)
 
 def create_contact(data):
