@@ -126,6 +126,7 @@ def create_parent_communication(data,ticket):
 			"recipients":data['email'],
 			"content": data['body'],
 			"status": "Linked",
+            "message_id":data['thread_id'],
 			"reference_doctype": "Ticket",
 			"reference_name": ticket.name,
 		}
