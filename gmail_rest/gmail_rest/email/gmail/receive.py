@@ -44,7 +44,7 @@ def fetch():
             'raised_by':'',
             'first_name':'',
             'email':google_credentials.email,
-            'thread_id':thread_id
+            'message_id':''
         }
 
         for msg in thread_data['messages']:
@@ -70,8 +70,14 @@ def fetch():
                     data['first_name']=value.split(' ')[0]
             except:
                 pass
+            try:
+                if header['name']=='Message-ID':
+                    value=header['value']
+                    data['message_id']=value
+            except:
+                pass
         communications = frappe.db.get_list("Communication",filters={
-        'message_id':thread_id
+        'message_id':data['message_id']
         },
         fields=['name','reference_name']
         )
@@ -132,7 +138,7 @@ def create_parent_communication(data,ticket):
 			"recipients":data['email'],
 			"content": data['body'],
 			"status": "Linked",
-            "message_id":data['thread_id'],
+            "message_id":data['message_id'],
 			"reference_doctype": "Ticket",
 			"reference_name": ticket.name,
 		}
