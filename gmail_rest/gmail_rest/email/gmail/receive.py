@@ -37,7 +37,7 @@ def fetch():
         message = thread_data['messages'][-1]
         payload = message['payload']
         headers = payload['headers']
-        body=message[0]['snippet']
+        body=message['snippet']
         data={
             'body':body,
             'subject':'',
