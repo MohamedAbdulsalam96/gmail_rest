@@ -150,13 +150,13 @@ def create_communication_thread(data,ticket):
 			"communication_medium": "Email",
 			"sent_or_received": "Received",
 			"email_status": "Open",
-			"subject":"Re:" + data['subject'] + f" (#{ticket.name})",
+			"subject":"Re:" + data['subject'] + f" (#{ticket})",
 			"sender": data['raised_by'],
 			"recipients":data['email'],
 			"content": data['body'],
 			"status": "Linked",
 			"reference_doctype": "Ticket",
-			"reference_name": ticket.name,
+			"reference_name": ticket,
 		}
 	)
     communication.ignore_permissions = True
