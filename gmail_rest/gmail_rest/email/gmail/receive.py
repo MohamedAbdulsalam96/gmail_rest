@@ -33,7 +33,7 @@ def fetch():
     for thread in threads:
         thread_id = thread['id']
         thread_data = gmail.users().threads().get(userId='me', id=thread_id,format='full').execute()
-        thread_info.append(thread_data['messages'])
+        thread_info.append(thread_data['messages'][-1])
         message = thread_data['messages'][-1]
         payload = message['payload']
         headers = payload['headers']
@@ -71,7 +71,7 @@ def fetch():
             except:
                 pass
             try:
-                if header['name']=='Message-ID':
+                if header['name']=='Message-Id':
                     value=header['value']
                     data['message_id']=value
             except:
