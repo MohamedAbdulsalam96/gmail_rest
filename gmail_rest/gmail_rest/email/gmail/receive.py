@@ -32,7 +32,7 @@ def fetch():
     for thread in threads:
         thread_id = thread['id']
         thread_data = gmail.users().threads().get(userId='me', id=thread_id).execute()
-        thread_info.append(thread_data)
+        thread_info.append(thread_data['messages'])
         message = thread_data['messages'][0]
         payload = message['payload']
         headers = payload['headers']
@@ -42,7 +42,8 @@ def fetch():
             'subject':'',
             'raised_by':'',
             'first_name':'',
-            'email':google_credentials.email
+            'email':google_credentials.email,
+            'thread_id':''
         }
 
         for header in headers:
@@ -85,7 +86,7 @@ def create_ticket(data):
         'description':data['body'] 
     })
     ticket.insert(ignore_permissions=True)
-
+    communications = frappe.get_doc("Communication")
     create_parent_communication(data=data,ticket=ticket)
 
 def create_contact(data):
