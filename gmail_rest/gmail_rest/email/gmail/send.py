@@ -94,7 +94,7 @@ def gmail_send_message(
         threads = service.users().threads().list(
             userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
 
-        thread_id = message_id if message_id!=None else None
+        thread_id = threads[0]['id'] if threads else None
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
