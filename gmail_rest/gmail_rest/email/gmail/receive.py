@@ -64,14 +64,16 @@ def fetch():
                     data['first_name']=value.split(' ')[0]
             except:
                 pass
-        communications = frappe.get_doc("Communication",filters={
+        communications = frappe.db.get_list("Communication",filters={
         'message_id':thread_id
-        })
+        },
+        fields=['name','reference_name']
+        )
         if not communications:
             frappe.enqueue(create_ticket,queue='default', data=data)
             frappe.enqueue(create_contact,queue='default',data=data)
         else:
-            create_communication_thread(data=data,ticket=communications.reference_name)
+            create_communication_thread(data=data,ticket=communications[0]['reference_name'])
         thread_data = f'''<span title=${thread['id']}>{thread['snippet']}</span>'''
 
     modify_request={'ids':[t['id'] for t in threads],'removeLabelIds':['UNREAD']}
