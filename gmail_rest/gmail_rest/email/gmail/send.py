@@ -92,10 +92,10 @@ def gmail_send_message(
         message['References']=message_id
 
   
-        threads = service.users().threads().list(
-            userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
+        # threads = service.users().threads().list(
+        #     userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
 
-        thread_id = threads[0]['threadId'] if threads else None
+        # thread_id = threads[0]['threadId'] if threads else None
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
@@ -103,15 +103,13 @@ def gmail_send_message(
 
         create_message = {
             'raw': encoded_message,
-            'threadId': thread_id
         }
         # pylint: disable=E1101
-        try:
-            service.users().threads().list(userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
-        except:
-            pass
-        send_message = (service.users().messages().send
-                        (userId="me", body=create_message).execute())
+        # try:
+        #     service.users().threads().list(userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
+        # except:
+        #     pass
+        send_message = (service.users().messages().send(userId="me", body=create_message).execute())
         print(F'Message Id: {send_message["id"]}')
     except HttpError as error:
         print(F'An error occurred: {error}')
