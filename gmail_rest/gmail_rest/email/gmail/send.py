@@ -3,6 +3,8 @@ import frappe
 
 import base64
 from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import google.auth
 from googleapiclient.discovery import build
@@ -17,6 +19,7 @@ def gmail_send_message(
     recipients=None,
     subject=None,
     content=None,
+    html_content=None,
     cc=None,
     bcc=None
 ):
@@ -84,6 +87,8 @@ def gmail_send_message(
         message['To'] = recipients
         message['From'] = google_credentials.email
         message['Subject'] = subject
+        message['Reply-To']=google_credentials.email
+
   
         threads = service.users().threads().list(
             userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
