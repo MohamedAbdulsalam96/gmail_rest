@@ -28,6 +28,7 @@ def gmail_send_message(
     TODO(developer) - See https://developers.google.com/identity
     for guides on implementing OAuth2 for the application.
     """
+    google_credentials=frappe.get_doc('Email Credentials')
     doc=frappe.get_doc("Ticket",name)
     communication = frappe.new_doc("Communication")
     communication.update(
@@ -37,7 +38,7 @@ def gmail_send_message(
 			"sent_or_received": "Sent",
 			"email_status": "Open",
 			"subject": "Re: " + doc.subject + f" (#{doc.name})",
-			"sender": frappe.session.user,
+			"sender": google_credentials.email,
 			"recipients": doc.raised_by,
 			"content": content,
 			"status": "Linked",
@@ -49,8 +50,6 @@ def gmail_send_message(
     communication.ignore_mandatory = True
     communication.save(ignore_permissions=True)
 
-
-    google_credentials=frappe.get_doc('Email Credentials')
     
     for scope in google_credentials.scope:
         SCOPES.append(scope.scopes)
@@ -64,6 +63,17 @@ def gmail_send_message(
         scopes=SCOPES
 
     )
+    
+    parent_communication = frappe.db.get_list('Communication',filters={
+        'reference_name':name
+    })
+    message_id=''
+
+    for communication in parent_communication:
+        if communication['message_id'] != None:
+            message_id=communication['message_id']
+        else:
+            pass
 
     try:
         service = build('gmail', 'v1', credentials=creds)
@@ -78,7 +88,7 @@ def gmail_send_message(
         threads = service.users().threads().list(
             userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
 
-        thread_id = threads[0]['id'] if threads else None
+        thread_id = message_id if message_id!=None else None
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
