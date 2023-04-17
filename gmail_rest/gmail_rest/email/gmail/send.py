@@ -66,7 +66,7 @@ def gmail_send_message(
     
     parent_communication = frappe.db.get_list('Communication',filters={
         'reference_name':name
-    })
+    },fields=['name','message_id'])
     message_id=''
 
     for communication in parent_communication:
