@@ -88,7 +88,7 @@ def fetch():
         gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     except:
         frappe.throw('Email not marked as unread in gmail. An error occured')
-    return message_info
+    return thread_info
 
 def create_ticket(data):
 
