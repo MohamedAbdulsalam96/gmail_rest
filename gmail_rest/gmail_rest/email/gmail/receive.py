@@ -29,9 +29,10 @@ def fetch():
     server = imaplib.IMAP4_SSL('imap.gmail.com')
 
     thread_info=[]
+    message_info=[]
     for thread in threads:
         thread_id = thread['id']
-        thread_data = gmail.users().threads().get(userId='me', id=thread_id).execute()
+        thread_data = gmail.users().threads().get(userId='me', id=thread_id,format='full').execute()
         thread_info.append(thread_data['messages'])
         message = thread_data['messages'][0]
         payload = message['payload']
@@ -45,6 +46,11 @@ def fetch():
             'email':google_credentials.email,
             'thread_id':thread_id
         }
+
+        for msg in thread['messages']:
+            message_id=msg['id']
+            message_data = gmail.users().messages().get(userId='me', id=message_id, format='full').execute()
+            message_info.append(message_data)
 
         for header in headers:
             try:
@@ -82,7 +88,7 @@ def fetch():
         gmail.users().messages().batchModify(userId='me', body=modify_request).execute()
     except:
         frappe.throw('Email not marked as unread in gmail. An error occured')
-    return thread_info
+    return message_info
 
 def create_ticket(data):
 
