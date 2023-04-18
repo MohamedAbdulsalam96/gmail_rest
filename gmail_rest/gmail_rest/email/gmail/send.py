@@ -89,10 +89,6 @@ def gmail_send_message(
         message['Subject'] = subject
         message['Reply-To']=google_credentials.email
         message['In-Reply-To']=message_id
-        
-        original_message = service.users().messages().get(userId='me', id=message_id).execute()
-
-        thread_id = original_message['threadId']
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
@@ -100,7 +96,6 @@ def gmail_send_message(
 
         create_message = {
             'raw': encoded_message,
-            'threadId':thread_id
         }
         send_message = (service.users().messages().send(userId="me", body=create_message).execute())
         print(F'Message Id: {send_message["id"]}')
