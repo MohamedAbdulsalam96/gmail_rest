@@ -79,7 +79,11 @@ def gmail_send_message(
             pass
 
     try:
+        
+        
         service = build('gmail', 'v1', credentials=creds)
+        original_message = service.users().messages().get(userId='me', id=message_id).execute()
+        thread_id = original_message['threadId']
         message = EmailMessage()
 
         message.set_content(content)
@@ -90,6 +94,7 @@ def gmail_send_message(
         message['Reply-To']=google_credentials.email
         message['In-Reply-To']=message_id
         message['References']=message_id
+        message['threadId']=thread_id
 
   
         # threads = service.users().threads().list(
@@ -109,7 +114,7 @@ def gmail_send_message(
         #     service.users().threads().list(userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
         # except:
         #     pass
-        send_message = (service.users().messages().send(userId="me", body=create_message).execute())
+        send_message = service.users().messages().send(userId="me", body=create_message).execute()
         print(F'Message Id: {send_message["id"]}')
     except HttpError as error:
         print(F'An error occurred: {error}')
