@@ -79,7 +79,7 @@ def fetch():
             except:
                 pass
         communications = frappe.db.get_list("Communication",filters={
-        'message_id':data['message_id']
+        'thread_id':data['thread_id']
         },
         fields=['name','reference_name']
         )
