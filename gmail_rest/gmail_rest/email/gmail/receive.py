@@ -35,6 +35,7 @@ def fetch():
         thread_data = gmail.users().threads().get(userId='me', id=thread_id,format='full').execute()
         thread_info.append(thread_data['messages'][-1])
         message = thread_data['messages'][-1]
+        uid=message['threadId']
         payload = message['payload']
         headers = payload['headers']
         body=message['snippet']

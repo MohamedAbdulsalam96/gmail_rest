@@ -96,6 +96,7 @@ def gmail_send_message(
 
         create_message = {
             'raw': encoded_message,
+            'threadId':'18792f6fdcc29b8f'
         }
         send_message = (service.users().messages().send(userId="me", body=create_message).execute())
         print(F'Message Id: {send_message["id"]}')
