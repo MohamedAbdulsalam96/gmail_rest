@@ -69,12 +69,14 @@ def gmail_send_message(
     
     parent_communication = frappe.db.get_list('Communication',filters={
         'reference_name':name
-    },fields=['name','message_id'])
+    },fields=['name','message_id','thread_id'])
     message_id=''
+    thread_id=''
 
     for communication in parent_communication:
         if communication['message_id'] != None:
             message_id=communication['message_id']
+            thread_id =communication['thread_id']
         else:
             pass
 
@@ -96,7 +98,7 @@ def gmail_send_message(
 
         create_message = {
             'raw': encoded_message,
-            'threadId':'18792f6fdcc29b8f'
+            'threadId':thread_id
         }
         send_message = (service.users().messages().send(userId="me", body=create_message).execute())
         print(F'Message Id: {send_message["id"]}')
