@@ -79,28 +79,24 @@ def gmail_send_message(
             pass
 
     try:
-        
-        
         service = build('gmail', 'v1', credentials=creds)
-        original_message = service.users().messages().get(userId='me', id=message_id).execute()
-        thread_id = original_message['threadId']
         message = EmailMessage()
 
         message.set_content(content)
 
         message['To'] = recipients
         message['From'] = google_credentials.email
-        message['Subject'] = subject
+        message['Subject'] = 'Re: '+subject
         message['Reply-To']=google_credentials.email
+        message['Message-ID']=message_id
         message['In-Reply-To']=message_id
         message['References']=message_id
-        message['threadId']=thread_id
 
   
-        # threads = service.users().threads().list(
-        #     userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
+        threads = service.users().threads().list(
+            userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
 
-        # thread_id = threads[0]['threadId'] if threads else None
+        thread_id = threads[0]['threadId'] if threads else None
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()) \
@@ -110,11 +106,11 @@ def gmail_send_message(
             'raw': encoded_message,
         }
         # pylint: disable=E1101
-        # try:
-        #     service.users().threads().list(userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
-        # except:
-        #     pass
-        send_message = service.users().messages().send(userId="me", body=create_message).execute()
+        try:
+            service.users().threads().list(userId='me', q='subject:"{}"'.format(subject)).execute().get('threads', [])
+        except:
+            pass
+        send_message = (service.users().messages().send(userId="me", body=create_message).execute())
         print(F'Message Id: {send_message["id"]}')
     except HttpError as error:
         print(F'An error occurred: {error}')
