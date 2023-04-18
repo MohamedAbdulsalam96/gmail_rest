@@ -17,7 +17,7 @@ def sendmail(
             name=name,
             recipients=recipients,
             subject=subject,
-            content=content,
+            html_content=content,
             cc=cc,
             bcc=bcc
         )

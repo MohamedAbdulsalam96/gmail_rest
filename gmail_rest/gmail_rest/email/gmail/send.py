@@ -5,6 +5,7 @@ import base64
 from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from frappe.core.utils import html2text
 
 import google.auth
 from googleapiclient.discovery import build
@@ -18,7 +19,6 @@ def gmail_send_message(
     name=None,
     recipients=None,
     subject=None,
-    content=None,
     html_content=None,
     cc=None,
     bcc=None
@@ -43,7 +43,7 @@ def gmail_send_message(
 			"subject": "Re: " + doc.subject + f" (#{doc.name})",
 			"sender": google_credentials.email,
 			"recipients": doc.raised_by,
-			"content": content,
+			"content": html_content,
 			"status": "Linked",
 			"reference_doctype": "Ticket",
 			"reference_name": doc.name,
@@ -82,9 +82,13 @@ def gmail_send_message(
 
     try:
         service = build('gmail', 'v1', credentials=creds)
-        message = EmailMessage()
+        plain_text_content = html2text(html_content)
+        message=MIMEMultipart('alternative')
+        text_part = MIMEText(plain_text_content, 'plain')
+        html_part = MIMEText(html_content, 'html')
 
-        message.set_content(content)
+        message.attach(text_part)
+        message.attach(html_part)
 
         message['To'] = recipients
         message['From'] = google_credentials.email
